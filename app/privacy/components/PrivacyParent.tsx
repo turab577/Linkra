@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 function Navbar() {
@@ -14,24 +15,19 @@ function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-[#050D1A]/95 backdrop-blur-xl border-b border-[#00C2FF]/10 shadow-[0_4px_40px_rgba(0,194,255,0.06)]'
+          ? 'bg-[#0a1628]/95 backdrop-blur-xl shadow-[0_4px_40px_rgba(104,191,205,0.06)]'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00C2FF] to-[#7B2FFF] flex items-center justify-center shadow-[0_0_20px_rgba(0,194,255,0.4)]">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M4 10C4 7 6.5 5 9 5h1V3H9C5.13 3 2 6.13 2 10s3.13 7 7 7h1v-2H9C6.5 15 4 13 4 10z" fill="white"/>
-              <path d="M11 3v2h1c2.5 0 5 2 5 5s-2.5 5-5 5h-1v2h1c3.87 0 7-3.13 7-7s-3.13-7-7-7h-1z" fill="white" opacity="0.6"/>
-              <rect x="7" y="9" width="6" height="2" rx="1" fill="white"/>
-            </svg>
-          </div>
-          <span className="text-white font-black text-xl tracking-tight">Linkra</span>
-        </a>
+        <div className='flex items-center gap-2.5'>
+          <Image src="/images/logo.svg" alt="Linkra" width={40} height={40} />
+          <span className='text-[26px] font-bold tracking-tight text-white' style={{ fontFamily: "'Lora', Georgia, serif" }}>Linkra</span>
+        </div>
         <a
           href="/"
-          className="flex items-center gap-1.5 text-white/50 hover:text-[#00C2FF] text-sm font-medium transition-colors duration-200"
+          className="flex items-center gap-1.5 text-[#c8dde2]/50 hover:text-[#68bfcd] text-sm font-medium transition-colors duration-200"
+          style={{ fontFamily: "'DM Sans', sans-serif" }}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -56,13 +52,21 @@ interface SectionProps {
 function Section({ id, number, title, children }: SectionProps) {
   return (
     <div id={id} className="scroll-mt-28 mb-14">
-      <div className="flex items-start gap-4 mb-4">
-        <span className="shrink-0 w-8 h-8 rounded-lg bg-[#00C2FF]/10 border border-[#00C2FF]/20 flex items-center justify-center text-[#00C2FF] text-xs font-black">
+      <div className="flex items-start gap-4 mb-5">
+        <span
+          className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-[#68bfcd] text-xs font-black border border-[#68bfcd]/25"
+          style={{ background: 'rgba(104,191,205,0.08)', fontFamily: "'Lora', Georgia, serif" }}
+        >
           {number}
         </span>
-        <h2 className="text-white text-xl font-bold leading-snug pt-1">{title}</h2>
+        <h2 className="text-white text-xl font-bold leading-snug pt-1" style={{ fontFamily: "'Lora', Georgia, serif" }}>{title}</h2>
       </div>
-      <div className="ml-12 text-white/55 text-sm leading-[1.9] space-y-3">{children}</div>
+      <div
+        className="ml-12 text-[#c8dde2]/55 text-sm leading-[1.9] space-y-3"
+        style={{ fontFamily: "'DM Sans', sans-serif" }}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -111,19 +115,21 @@ function TableOfContents() {
 
   return (
     <aside className="hidden lg:block w-64 shrink-0 sticky top-28 self-start">
-      <p className="text-white/30 text-xs font-bold tracking-[0.15em] uppercase mb-4">Contents</p>
+      <p className="text-[#68bfcd]/40 text-xs font-bold tracking-[0.15em] uppercase mb-4" style={{ fontFamily: "'DM Sans', sans-serif" }}>Contents</p>
       <nav className="space-y-0.5">
         {sections.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
-            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 ${
               active === s.id
-                ? 'bg-[#00C2FF]/10 text-[#00C2FF]'
-                : 'text-white/30 hover:text-white/60'
+                ? 'bg-[#68bfcd]/10 text-[#68bfcd] border border-[#68bfcd]/18'
+                : 'text-[#c8dde2]/28 hover:text-[#c8dde2]/60 border border-transparent'
             }`}
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
-            <span className={`text-[10px] font-black shrink-0 ${active === s.id ? 'text-[#00C2FF]' : 'text-white/20'}`}>
+            <span className={`text-[10px] font-black shrink-0 ${active === s.id ? 'text-[#68bfcd]' : 'text-[#c8dde2]/20'}`}
+              style={{ fontFamily: "'Lora', Georgia, serif" }}>
               {s.number}
             </span>
             {s.title}
@@ -139,25 +145,58 @@ function TableOfContents() {
 ───────────────────────────────────────── */
 export default function PrivacyParent() {
   return (
-    <div className="min-h-screen bg-[#050D1A] text-white" style={{ fontFamily: "'DM Sans', 'Inter', sans-serif" }}>
+    <div className="min-h-screen text-white" style={{ background: '#0a1628', fontFamily: "'DM Sans', sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
         html { scroll-behavior: smooth; }
         * { box-sizing: border-box; }
       `}</style>
 
       <Navbar />
 
+      {/* Ambient background — identical to Hero's organic blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] right-[-5%] w-[700px] h-[700px] rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, #68bfcd 0%, transparent 70%)' }} />
+        <div className="absolute bottom-[-5%] left-[-10%] w-[600px] h-[600px] rounded-full opacity-[0.07]"
+          style={{ background: 'radial-gradient(circle, #4aa8b8 0%, transparent 65%)' }} />
+        {/* Wavy lines */}
+        <svg className="absolute top-0 left-0 w-full h-full opacity-[0.03]" viewBox="0 0 1440 900" preserveAspectRatio="none">
+          <path d="M0,200 C360,300 720,100 1440,250" stroke="#68bfcd" strokeWidth="1" fill="none"/>
+          <path d="M0,500 C400,600 800,400 1440,550" stroke="#68bfcd" strokeWidth="1" fill="none"/>
+          <path d="M0,800 C300,900 900,700 1440,820" stroke="#68bfcd" strokeWidth="1" fill="none"/>
+        </svg>
+        {/* Subtle grain */}
+        <div className="absolute inset-0 opacity-[0.02]"
+          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E\")", backgroundSize: '200px' }} />
+      </div>
+
       {/* Hero header */}
-      <div className="relative pt-32 pb-16 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,194,255,0.06),transparent_60%)] pointer-events-none" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-px bg-gradient-to-r from-transparent via-[#00C2FF]/40 to-transparent" />
-        <p className="text-[#00C2FF] text-xs font-bold tracking-[0.2em] uppercase mb-3">Legal</p>
-        <h1 className="text-white text-4xl sm:text-5xl font-black mb-4">Privacy Policy</h1>
-        <p className="text-white/40 text-sm max-w-md mx-auto">
-          Effective date: <span className="text-white/60 font-semibold">January 1, 2025</span> &nbsp;·&nbsp; Last updated: <span className="text-white/60 font-semibold">April 20, 2025</span>
+      <div className="relative z-10 pt-32 pb-16 px-6 text-center overflow-hidden">
+        {/* Top line glow — same pattern as landing sections */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-px"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(104,191,205,0.45), transparent)' }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at top, rgba(104,191,205,0.06), transparent 60%)' }} />
+
+        {/* Label + decorative lines — mirrors section headers on landing page */}
+        <div className="flex items-center justify-center gap-4 mb-5">
+          <div className="h-px w-16 bg-gradient-to-r from-transparent to-[#68bfcd]/40" />
+          <p className="text-[#68bfcd] text-xs font-semibold tracking-[0.22em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Legal</p>
+          <div className="h-px w-16 bg-gradient-to-l from-transparent to-[#68bfcd]/40" />
+        </div>
+
+        <h1 className="text-white text-4xl sm:text-[56px] font-bold mb-4 leading-[1.1]" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+          Privacy Policy
+        </h1>
+        <p className="text-[#c8dde2]/40 text-sm max-w-md mx-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          Effective date: <span className="text-[#c8dde2]/65 font-semibold">January 1, 2025</span>
+          &nbsp;·&nbsp;
+          Last updated: <span className="text-[#c8dde2]/65 font-semibold">April 20, 2025</span>
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+
+        {/* Compliance badges — styled like platform pills on landing */}
+        <div className="mt-8 flex flex-wrap justify-center gap-2.5">
           {[
             'GDPR Compliant',
             'CCPA Compliant',
@@ -165,10 +204,12 @@ export default function PrivacyParent() {
             'WhatsApp Business API',
             'Instagram Graph API',
           ].map((badge) => (
-            <span key={badge} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#00C2FF]/20 bg-[#00C2FF]/5 text-[#00C2FF]/70 text-xs font-medium">
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                <circle cx="4" cy="4" r="3" fill="#00C2FF" opacity="0.6"/>
-              </svg>
+            <span
+              key={badge}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#68bfcd]/15 bg-[#68bfcd]/5 text-[#c8dde2]/55 text-xs font-medium"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#68bfcd] opacity-60" />
               {badge}
             </span>
           ))}
@@ -176,14 +217,15 @@ export default function PrivacyParent() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 pb-24 flex gap-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pb-24 flex gap-16">
         <TableOfContents />
 
         <main className="flex-1 max-w-2xl">
 
-          {/* Intro box */}
-          <div className="mb-12 p-5 rounded-2xl border border-[#00C2FF]/15 bg-[#00C2FF]/4">
-            <p className="text-white/65 text-sm leading-relaxed">
+          {/* Intro box — styled like the StatsStrip card */}
+          <div className="mb-12 p-6 rounded-2xl border border-[#68bfcd]/14"
+            style={{ background: 'linear-gradient(135deg, rgba(104,191,205,0.07), rgba(74,168,184,0.03))' }}>
+            <p className="text-[#c8dde2]/60 text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               At Linkra (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;), your privacy is not an afterthought — it is the foundation of our
               product. This Privacy Policy explains exactly what data we access, what we do with it, what we
               will never do with it, and how you remain in full control at all times. Linkra is a unified
@@ -198,7 +240,7 @@ export default function PrivacyParent() {
           <Section id="overview" number="01" title="Overview & Scope">
             <p>
               This Privacy Policy applies to all users of the Linkra application and services, including
-              our website at <span className="text-[#00C2FF]">linkra.io</span>, our mobile applications,
+              our website at <span className="text-[#68bfcd]">linkra.io</span>, our mobile applications,
               and any related products or features (collectively, the &quot;Service&quot;). It applies regardless
               of where you are located in the world.
             </p>
@@ -385,16 +427,16 @@ export default function PrivacyParent() {
                 'We will NEVER access social media API data for any purpose beyond providing the Linkra messaging aggregation service you authorized.',
                 'We will NEVER store your social media passwords. We use OAuth tokens only.',
                 'We will NEVER access your social media account data in ways that exceed the permissions you explicitly granted via OAuth.',
-                'We will NEVER scrape or harvest data from social platforms beyond what is permitted by each platform\'s official API and Terms of Service.',
-                'We will NEVER share API data obtained from Instagram, WhatsApp, Facebook, or any other Meta platform with data brokers or analytics companies.',
-                'We will NEVER use Meta platform data for purposes inconsistent with Meta\'s Platform Terms.',
+                "We will NEVER scrape or harvest data from social platforms beyond what is permitted by each platform's official API and Terms of Service.",
+                "We will NEVER share API data obtained from Instagram, WhatsApp, Facebook, or any other Meta platform with data brokers or analytics companies.",
+                "We will NEVER use Meta platform data for purposes inconsistent with Meta's Platform Terms.",
               ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-red-500/4 border border-red-500/10">
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-red-400/10 bg-red-500/4">
                   <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 14 14" fill="none">
                     <circle cx="7" cy="7" r="6" fill="#EF4444" opacity="0.15"/>
                     <path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="#EF4444" strokeWidth="1.4" strokeLinecap="round"/>
                   </svg>
-                  <p className="text-white/60 text-sm">{item}</p>
+                  <p className="text-[#c8dde2]/55 text-sm" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item}</p>
                 </div>
               ))}
             </div>
@@ -454,15 +496,15 @@ export default function PrivacyParent() {
             <div className="mt-2 space-y-2">
               {[
                 { name: 'Supabase', role: 'Database, authentication, and real-time messaging infrastructure', cert: 'SOC 2 Type II' },
-                { name: 'Vercel / AWS', role: 'Application hosting, CDN, and edge compute infrastructure', cert: 'SOC 2 Type II, ISO 27001' },
+                { name: 'Vercel / AWS', role: 'Application hosting, CDN, and edge compute infrastructure', cert: 'SOC 2 · ISO 27001' },
                 { name: 'Stripe', role: 'Payment processing (PCI-DSS Level 1)', cert: 'PCI-DSS Level 1' },
               ].map((p) => (
-                <div key={p.name} className="p-3 rounded-xl border border-white/6 bg-white/2">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-white/80 text-xs font-bold">{p.name}</span>
-                    <span className="text-[#00C2FF]/60 text-[10px] font-semibold">{p.cert}</span>
+                <div key={p.name} className="p-4 rounded-xl border border-[#68bfcd]/8 bg-[#0f1f35]/40">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white/80 text-xs font-bold" style={{ fontFamily: "'Lora', Georgia, serif" }}>{p.name}</span>
+                    <span className="text-[#68bfcd]/60 text-[10px] font-semibold" style={{ fontFamily: "'DM Sans', sans-serif" }}>{p.cert}</span>
                   </div>
-                  <p className="text-white/40 text-xs">{p.role}</p>
+                  <p className="text-[#c8dde2]/38 text-xs" style={{ fontFamily: "'DM Sans', sans-serif" }}>{p.role}</p>
                 </div>
               ))}
             </div>
@@ -501,9 +543,10 @@ export default function PrivacyParent() {
               Data Uses; (c) we do not transfer Meta platform data to any analytics provider or data
               aggregator; (d) we store Meta platform data only for as long as necessary to deliver the
               Service, and delete it promptly upon user disconnection; (e) our app has completed Meta&apos;s
-              App Review process for all required permissions including <code className="text-[#00C2FF] bg-[#00C2FF]/8 px-1 rounded text-xs">instagram_manage_messages</code>,{' '}
-              <code className="text-[#00C2FF] bg-[#00C2FF]/8 px-1 rounded text-xs">pages_messaging</code>, and{' '}
-              <code className="text-[#00C2FF] bg-[#00C2FF]/8 px-1 rounded text-xs">whatsapp_business_messaging</code>.
+              App Review process for all required permissions including{' '}
+              <code className="text-[#68bfcd] bg-[#68bfcd]/8 px-1 rounded text-xs">instagram_manage_messages</code>,{' '}
+              <code className="text-[#68bfcd] bg-[#68bfcd]/8 px-1 rounded text-xs">pages_messaging</code>, and{' '}
+              <code className="text-[#68bfcd] bg-[#68bfcd]/8 px-1 rounded text-xs">whatsapp_business_messaging</code>.
             </p>
             <p>
               <strong className="text-white/80">Telegram:</strong> We access Telegram via the official
@@ -535,346 +578,143 @@ export default function PrivacyParent() {
               You have meaningful rights over your personal data. We are committed to honoring all of them
               promptly, without discrimination, and free of charge:
             </p>
-            <p>
-              <strong className="text-white/80">Right of Access:</strong> You may request a full export
-              of all personal data Linkra holds about you, including your account data, connected platform
-              tokens (metadata only, not raw tokens), and any cached message data.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Correction:</strong> You may correct inaccurate
-              personal data directly in your Linkra account settings. For data we cannot correct on your
-              behalf, we will instruct you on how to do so.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Deletion ("Right to Be Forgotten"):</strong> You
-              may request deletion of your Linkra account and all associated data — including cached
-              messages, account information, and OAuth tokens. We will complete this within 30 days.
-              Deleting your Linkra account does not delete messages on the source platform; those must be
-              deleted directly on Instagram, WhatsApp, etc.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Disconnect a Platform:</strong> You may disconnect
-              any connected social media platform at any time from Linkra&apos;s settings. Upon disconnection,
-              we immediately revoke your OAuth token for that platform and delete all cached message data
-              from that platform within 72 hours.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Data Portability:</strong> You may request an
-              export of your personal data in a machine-readable format (JSON or CSV).
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Object / Restrict Processing:</strong> You may
-              object to processing of your data based on legitimate interests, or request that we restrict
-              processing while a dispute is resolved.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Withdraw Consent:</strong> Where processing is
-              based on your consent (including access to social platform message data), you may withdraw
-              consent at any time by disconnecting the relevant platform. Withdrawal does not affect prior
-              lawful processing.
-            </p>
-            <p>
-              <strong className="text-white/80">CCPA Rights:</strong> California residents have the right
-              to know what personal information we collect and how it is used, the right to delete personal
-              information, the right to opt out of the sale of personal information (we do not sell
-              personal information), and the right to non-discrimination for exercising CCPA rights.
-            </p>
-            <p>
-              <strong className="text-white/80">Right to Lodge a Complaint:</strong> If you believe we
-              have violated your privacy rights, you may file a complaint with your local data protection
-              authority. For EU residents, this is your national DPA (e.g., ICO for the UK, CNIL for
-              France). We encourage you to contact us first so we can resolve the matter directly.
-            </p>
+            <p><strong className="text-white/80">Right of Access:</strong> You may request a full export of all personal data Linkra holds about you, including your account data, connected platform tokens (metadata only, not raw tokens), and any cached message data.</p>
+            <p><strong className="text-white/80">Right to Correction:</strong> You may correct inaccurate personal data directly in your Linkra account settings. For data we cannot correct on your behalf, we will instruct you on how to do so.</p>
+            <p><strong className="text-white/80">Right to Deletion ("Right to Be Forgotten"):</strong> You may request deletion of your Linkra account and all associated data — including cached messages, account information, and OAuth tokens. We will complete this within 30 days.</p>
+            <p><strong className="text-white/80">Right to Disconnect a Platform:</strong> You may disconnect any connected social media platform at any time from Linkra&apos;s settings. Upon disconnection, we immediately revoke your OAuth token for that platform and delete all cached message data within 72 hours.</p>
+            <p><strong className="text-white/80">Right to Data Portability:</strong> You may request an export of your personal data in a machine-readable format (JSON or CSV).</p>
+            <p><strong className="text-white/80">Right to Object / Restrict Processing:</strong> You may object to processing of your data based on legitimate interests, or request that we restrict processing while a dispute is resolved.</p>
+            <p><strong className="text-white/80">CCPA Rights:</strong> California residents have the right to know what personal information we collect and how it is used, the right to delete personal information, the right to opt out of the sale of personal information (we do not sell personal information), and the right to non-discrimination for exercising CCPA rights.</p>
             <p>
               To exercise any of these rights, email us at{' '}
-              <a href="mailto:privacy@linkra.io" className="text-[#00C2FF] underline underline-offset-2">
+              <a href="mailto:privacy@linkra.io" className="text-[#68bfcd] underline underline-offset-2 hover:text-[#a8d8e0] transition-colors">
                 privacy@linkra.io
               </a>{' '}
-              or use the Data & Privacy section in your account settings. We will respond within 30 days
-              (or as required by applicable law).
+              or use the Data & Privacy section in your account settings. We will respond within 30 days.
             </p>
           </Section>
 
           {/* Section 11 */}
           <Section id="data-retention" number="11" title="Data Retention">
-            <p>
-              We retain data only for as long as necessary. Here is exactly how long we keep each data type:
-            </p>
+            <p>We retain data only for as long as necessary. Here is exactly how long we keep each data type:</p>
             <div className="space-y-2.5">
               {[
-                {
-                  type: 'Account Data (name, email, settings)',
-                  period: 'Duration of active account + 30 days post-deletion for recovery, then permanently deleted.',
-                },
-                {
-                  type: 'Cached Message Data (Free plan)',
-                  period: '30 days of message history cached. Older messages are purged automatically.',
-                },
-                {
-                  type: 'Cached Message Data (Pro plan)',
-                  period: '12 months of message history cached. Purged after 12 months.',
-                },
-                {
-                  type: 'Cached Message Data (Team plan)',
-                  period: '24 months of message history cached. Purged after 24 months.',
-                },
-                {
-                  type: 'OAuth Tokens',
-                  period: 'Retained while platform is connected. Immediately revoked and deleted upon platform disconnection or account deletion.',
-                },
-                {
-                  type: 'Payment & Billing Records',
-                  period: '7 years for legal and tax compliance, even after account deletion.',
-                },
-                {
-                  type: 'Security & Access Logs',
-                  period: '90 days for fraud detection and security investigations.',
-                },
-                {
-                  type: 'Support Communications',
-                  period: '2 years after your last support interaction.',
-                },
+                { type: 'Account Data (name, email, settings)', period: 'Duration of active account + 30 days post-deletion for recovery, then permanently deleted.' },
+                { type: 'Cached Message Data (Free plan)', period: '30 days of message history cached. Older messages are purged automatically.' },
+                { type: 'Cached Message Data (Pro plan)', period: '12 months of message history cached. Purged after 12 months.' },
+                { type: 'Cached Message Data (Team plan)', period: '24 months of message history cached. Purged after 24 months.' },
+                { type: 'OAuth Tokens', period: 'Retained while platform is connected. Immediately revoked and deleted upon platform disconnection or account deletion.' },
+                { type: 'Payment & Billing Records', period: '7 years for legal and tax compliance, even after account deletion.' },
+                { type: 'Security & Access Logs', period: '90 days for fraud detection and security investigations.' },
+                { type: 'Support Communications', period: '2 years after your last support interaction.' },
               ].map((item) => (
-                <div key={item.type} className="p-3.5 rounded-xl border border-white/6 bg-white/2">
-                  <p className="text-white/75 text-xs font-bold mb-1">{item.type}</p>
-                  <p className="text-white/40 text-xs leading-relaxed">{item.period}</p>
+                <div key={item.type} className="p-4 rounded-xl border border-[#68bfcd]/8 bg-[#0f1f35]/40 hover:border-[#68bfcd]/18 transition-colors duration-200">
+                  <p className="text-white/75 text-xs font-bold mb-1" style={{ fontFamily: "'Lora', Georgia, serif" }}>{item.type}</p>
+                  <p className="text-[#c8dde2]/40 text-xs leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.period}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-3">
-              Upon account deletion, all personal data is permanently deleted or irreversibly anonymized
-              within 30 days, except where longer retention is required by law (e.g., billing records).
-            </p>
+            <p className="mt-3">Upon account deletion, all personal data is permanently deleted or irreversibly anonymized within 30 days, except where longer retention is required by law (e.g., billing records).</p>
           </Section>
 
           {/* Section 12 */}
           <Section id="cookies" number="12" title="Cookies & Tracking">
-            <p>
-              Linkra uses a minimal set of cookies and local storage to operate the Service. We do not
-              use advertising cookies, cross-site tracking, or behavioral profiling technologies.
-            </p>
-            <p>
-              <strong className="text-white/80">Strictly Necessary Cookies:</strong> These are required
-              for the Service to function and include your session authentication token, CSRF protection
-              tokens, and user interface preferences (e.g., theme, language). You cannot opt out of these
-              while using Linkra.
-            </p>
-            <p>
-              <strong className="text-white/80">Analytics:</strong> We use a privacy-first, self-hosted
-              analytics tool to measure aggregate usage — page views, feature usage rates, and session
-              counts. This tool does not use cookies, does not collect personal identifiers, and does not
-              share data with third parties. No individual user profiles are built.
-            </p>
-            <p>
-              <strong className="text-white/80">What we do NOT use:</strong> We do not use Google
-              Analytics, Meta Pixel, or any other third-party advertising or behavioral tracking
-              technology. We do not participate in behavioral advertising networks.
-            </p>
-            <p>
-              <strong className="text-white/80">Managing Cookies:</strong> You may delete or manage
-              cookies at any time through your browser settings. Note that disabling session cookies will
-              prevent you from staying logged into Linkra.
-            </p>
+            <p>Linkra uses a minimal set of cookies and local storage to operate the Service. We do not use advertising cookies, cross-site tracking, or behavioral profiling technologies.</p>
+            <p><strong className="text-white/80">Strictly Necessary Cookies:</strong> These are required for the Service to function and include your session authentication token, CSRF protection tokens, and user interface preferences. You cannot opt out of these while using Linkra.</p>
+            <p><strong className="text-white/80">Analytics:</strong> We use a privacy-first, self-hosted analytics tool to measure aggregate usage — page views, feature usage rates, and session counts. This tool does not use cookies, does not collect personal identifiers, and does not share data with third parties.</p>
+            <p><strong className="text-white/80">What we do NOT use:</strong> We do not use Google Analytics, Meta Pixel, or any other third-party advertising or behavioral tracking technology. We do not participate in behavioral advertising networks.</p>
           </Section>
 
           {/* Section 13 */}
           <Section id="children" number="13" title="Children's Privacy">
-            <p>
-              Linkra is not directed at and may not be used by children. The minimum age to use Linkra is
-              <strong className="text-white/80"> 13 years old</strong> globally, and{' '}
-              <strong className="text-white/80">16 years old</strong> for users in the European Economic
-              Area, the United Kingdom, and other jurisdictions that set a higher digital consent age.
-            </p>
-            <p>
-              We do not knowingly collect personal information from children below the applicable minimum
-              age. Because Linkra connects to social media platforms that themselves require minimum age
-              compliance (Instagram and Facebook require users to be at least 13), we rely on those
-              platforms&apos; age verification in addition to our own.
-            </p>
-            <p>
-              If we become aware that a user is below the applicable minimum age, we will immediately
-              suspend the account and delete all associated data. If you are a parent or guardian and
-              believe your child has created a Linkra account without consent, please contact us
-              immediately at{' '}
-              <a href="mailto:privacy@linkra.io" className="text-[#00C2FF] underline underline-offset-2">
-                privacy@linkra.io
-              </a>.
+            <p>Linkra is not directed at and may not be used by children. The minimum age to use Linkra is <strong className="text-white/80">13 years old</strong> globally, and <strong className="text-white/80">16 years old</strong> for users in the European Economic Area, the United Kingdom, and other jurisdictions that set a higher digital consent age.</p>
+            <p>We do not knowingly collect personal information from children below the applicable minimum age. If we become aware that a user is below the applicable minimum age, we will immediately suspend the account and delete all associated data.</p>
+            <p>If you are a parent or guardian and believe your child has created a Linkra account without consent, please contact us immediately at{' '}
+              <a href="mailto:privacy@linkra.io" className="text-[#68bfcd] underline underline-offset-2 hover:text-[#a8d8e0] transition-colors">privacy@linkra.io</a>.
             </p>
           </Section>
 
           {/* Section 14 */}
           <Section id="security" number="14" title="Security">
-            <p>
-              Protecting your data — especially your private messages — is our highest technical priority.
-              We implement the following controls:
+            <p>Protecting your data — especially your private messages — is our highest technical priority. We implement the following controls:</p>
+            <p><strong className="text-white/80">Encryption in Transit:</strong> All data transmitted between your device and Linkra servers uses TLS 1.3. All communication with social platform APIs uses TLS with certificate pinning where supported.</p>
+            <p><strong className="text-white/80">Encryption at Rest:</strong> Message data and OAuth tokens are encrypted at rest using AES-256. Passwords are hashed using bcrypt with a minimum cost factor of 12.</p>
+            <p><strong className="text-white/80">Access Controls:</strong> Access to production systems is restricted to a small number of authorized Linkra engineers via multi-factor authentication and SSH key-based access. All access is logged and subject to audit.</p>
+            <p><strong className="text-white/80">Infrastructure:</strong> Linkra runs on SOC 2 Type II certified infrastructure. We conduct regular penetration testing and vulnerability assessments. Security researchers may report vulnerabilities to{' '}
+              <a href="mailto:security@linkra.io" className="text-[#68bfcd] underline underline-offset-2 hover:text-[#a8d8e0] transition-colors">security@linkra.io</a>.
             </p>
-            <p>
-              <strong className="text-white/80">Encryption in Transit:</strong> All data transmitted
-              between your device and Linkra servers uses TLS 1.3. All communication with social platform
-              APIs uses TLS with certificate pinning where supported.
-            </p>
-            <p>
-              <strong className="text-white/80">Encryption at Rest:</strong> Message data and OAuth tokens
-              are encrypted at rest using AES-256. Passwords are hashed using bcrypt with a minimum cost
-              factor of 12. Encryption keys are managed using a hardware security module (HSM) and rotated
-              on a regular schedule.
-            </p>
-            <p>
-              <strong className="text-white/80">Access Controls:</strong> Access to production systems is
-              restricted to a small number of authorized Linkra engineers via multi-factor authentication
-              and SSH key-based access. All access is logged and subject to audit. No engineer may access
-              user message data without a formally logged and authorized reason.
-            </p>
-            <p>
-              <strong className="text-white/80">Infrastructure:</strong> Linkra runs on SOC 2 Type II
-              certified infrastructure. We conduct regular penetration testing and vulnerability assessments.
-              We participate in a responsible disclosure program — security researchers may report
-              vulnerabilities to{' '}
-              <a href="mailto:security@linkra.io" className="text-[#00C2FF] underline underline-offset-2">
-                security@linkra.io
-              </a>.
-            </p>
-            <p>
-              <strong className="text-white/80">Incident Response:</strong> In the event of a data breach
-              that affects your personal data, we will notify you and relevant supervisory authorities
-              within 72 hours of becoming aware of the breach, as required by GDPR Article 33.
-            </p>
+            <p><strong className="text-white/80">Incident Response:</strong> In the event of a data breach that affects your personal data, we will notify you and relevant supervisory authorities within 72 hours of becoming aware of the breach, as required by GDPR Article 33.</p>
           </Section>
 
           {/* Section 15 */}
           <Section id="international" number="15" title="International Data Transfers">
-            <p>
-              Linkra is operated from the United States. If you access the Service from the EEA, UK,
-              Switzerland, or any other jurisdiction with data transfer restrictions, your personal data
-              will be transferred to and processed in the United States.
-            </p>
-            <p>
-              We ensure lawful transfer of personal data using the following mechanisms:
-            </p>
-            <p>
-              <strong className="text-white/80">Standard Contractual Clauses (SCCs):</strong> We have
-              executed the European Commission&apos;s Standard Contractual Clauses (2021 SCCs) with all
-              sub-processors who handle EEA personal data, including infrastructure providers.
-            </p>
-            <p>
-              <strong className="text-white/80">UK International Data Transfer Agreements (IDTAs):</strong>{' '}
-              For transfers involving UK personal data, we have entered into the ICO&apos;s International Data
-              Transfer Agreements (IDTAs) with relevant sub-processors.
-            </p>
-            <p>
-              <strong className="text-white/80">Adequacy Decisions:</strong> Where the European Commission
-              has issued an adequacy decision for the destination country, we rely on it as an additional
-              safeguard.
-            </p>
-            <p>
-              By using the Linkra Service, you acknowledge the transfer of your data to the United States
-              under the legal safeguards described above.
-            </p>
+            <p>Linkra is operated from the United States. If you access the Service from the EEA, UK, Switzerland, or any other jurisdiction with data transfer restrictions, your personal data will be transferred to and processed in the United States.</p>
+            <p><strong className="text-white/80">Standard Contractual Clauses (SCCs):</strong> We have executed the European Commission&apos;s Standard Contractual Clauses (2021 SCCs) with all sub-processors who handle EEA personal data, including infrastructure providers.</p>
+            <p><strong className="text-white/80">UK International Data Transfer Agreements (IDTAs):</strong> For transfers involving UK personal data, we have entered into the ICO&apos;s International Data Transfer Agreements (IDTAs) with relevant sub-processors.</p>
+            <p>By using the Linkra Service, you acknowledge the transfer of your data to the United States under the legal safeguards described above.</p>
           </Section>
 
           {/* Section 16 */}
           <Section id="changes" number="16" title="Changes to This Policy">
-            <p>
-              We may update this Privacy Policy to reflect changes in our product, applicable law, or
-              platform API requirements. For material changes — especially changes that affect how we
-              handle your message data or social media access — we will:
-            </p>
+            <p>We may update this Privacy Policy to reflect changes in our product, applicable law, or platform API requirements. For material changes we will:</p>
             <p>— Send an email to your registered address at least <strong className="text-white/80">30 days</strong> before changes take effect.</p>
             <p>— Display a prominent in-app notice upon your next login.</p>
             <p>— Update the &quot;Last Updated&quot; date at the top of this page.</p>
             <p>— For changes that require new consent (e.g., new data uses), we will obtain your explicit consent before the change applies to your data.</p>
-            <p>
-              Your continued use of the Service after changes take effect constitutes acceptance of the
-              updated policy. If you do not accept material changes, you may delete your account and
-              all associated data at any time.
-            </p>
-            <p>
-              An archive of previous versions of this policy is available upon request by emailing{' '}
-              <a href="mailto:privacy@linkra.io" className="text-[#00C2FF] underline underline-offset-2">
-                privacy@linkra.io
-              </a>.
+            <p>An archive of previous versions of this policy is available upon request by emailing{' '}
+              <a href="mailto:privacy@linkra.io" className="text-[#68bfcd] underline underline-offset-2 hover:text-[#a8d8e0] transition-colors">privacy@linkra.io</a>.
             </p>
           </Section>
 
           {/* Section 17 */}
           <Section id="contact" number="17" title="Contact Us">
-            <p>
-              If you have any questions, concerns, or data rights requests regarding this Privacy Policy
-              or Linkra&apos;s data practices, please contact our Privacy Team:
-            </p>
-            <div className="mt-4 p-5 rounded-xl border border-[#00C2FF]/15 bg-[#00C2FF]/4 space-y-3">
+            <p>If you have any questions, concerns, or data rights requests regarding this Privacy Policy or Linkra&apos;s data practices, please contact our Privacy Team:</p>
+            {/* Contact card — matches Stats/pricing card style */}
+            <div className="mt-4 p-6 rounded-2xl border border-[#68bfcd]/14 space-y-4"
+              style={{ background: 'linear-gradient(135deg, rgba(104,191,205,0.07), rgba(74,168,184,0.03))' }}>
               {[
-                {
-                  label: 'General privacy enquiries',
-                  value: 'privacy@linkra.io',
-                  href: 'mailto:privacy@linkra.io',
-                  isLink: true,
-                },
-                {
-                  label: 'Security vulnerabilities & incidents',
-                  value: 'security@linkra.io',
-                  href: 'mailto:security@linkra.io',
-                  isLink: true,
-                },
-                {
-                  label: 'Meta / Instagram data complaints',
-                  value: 'meta-compliance@linkra.io',
-                  href: 'mailto:meta-compliance@linkra.io',
-                  isLink: true,
-                },
-                {
-                  label: 'Response time',
-                  value: 'Within 3 business days (we aim for 24 hours)',
-                  isLink: false,
-                },
-                {
-                  label: 'Mailing address',
-                  value: 'Linkra Inc., 340 Pine Street, Suite 800, San Francisco, CA 94104, United States',
-                  isLink: false,
-                },
+                { label: 'General privacy enquiries', value: 'privacy@linkra.io', href: 'mailto:privacy@linkra.io', isLink: true },
+                { label: 'Security vulnerabilities & incidents', value: 'security@linkra.io', href: 'mailto:security@linkra.io', isLink: true },
+                { label: 'Meta / Instagram data complaints', value: 'meta-compliance@linkra.io', href: 'mailto:meta-compliance@linkra.io', isLink: true },
+                { label: 'Response time', value: 'Within 3 business days (we aim for 24 hours)', isLink: false },
+                { label: 'Mailing address', value: 'Linkra Inc., 340 Pine Street, Suite 800, San Francisco, CA 94104, United States', isLink: false },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-3">
                   <svg className="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <rect x="1" y="3" width="12" height="9" rx="1.5" stroke="#00C2FF" strokeWidth="1.2"/>
-                    <path d="M1 4.5l6 4 6-4" stroke="#00C2FF" strokeWidth="1.2" strokeLinecap="round"/>
+                    <rect x="1" y="3" width="12" height="9" rx="1.5" stroke="#68bfcd" strokeWidth="1.2"/>
+                    <path d="M1 4.5l6 4 6-4" stroke="#68bfcd" strokeWidth="1.2" strokeLinecap="round"/>
                   </svg>
                   <div>
-                    <span className="text-white/40 text-xs block">{item.label}</span>
+                    <span className="text-[#c8dde2]/35 text-xs block" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.label}</span>
                     {item.isLink ? (
-                      <a href={item.href} className="text-[#00C2FF] text-xs font-semibold hover:underline">
+                      <a href={item.href} className="text-[#68bfcd] text-xs font-semibold hover:text-[#a8d8e0] transition-colors underline underline-offset-2">
                         {item.value}
                       </a>
                     ) : (
-                      <span className="text-white/65 text-xs">{item.value}</span>
+                      <span className="text-[#c8dde2]/60 text-xs" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.value}</span>
                     )}
                   </div>
                 </div>
               ))}
             </div>
             <p className="mt-4">
-              For data subject rights requests (access, deletion, portability), please include your full
-              name, the email address on your Linkra account, the platform(s) in question, and a
-              description of your request. We may ask for identity verification before fulfilling any
-              rights request to protect your account security.
-            </p>
-            <p>
               <strong className="text-white/80">EU Representative:</strong> For the purposes of GDPR,
               our EU representative for data protection matters may be contacted at{' '}
-              <a href="mailto:eu-rep@linkra.io" className="text-[#00C2FF] underline underline-offset-2">
+              <a href="mailto:eu-rep@linkra.io" className="text-[#68bfcd] underline underline-offset-2 hover:text-[#a8d8e0] transition-colors">
                 eu-rep@linkra.io
               </a>.
             </p>
           </Section>
 
-          {/* Back to top */}
-          <div className="pt-8 border-t border-white/5 flex items-center justify-between">
-            <a href="/" className="flex items-center gap-1.5 text-white/35 hover:text-[#00C2FF] text-sm transition-colors">
+          {/* Back links */}
+          <div className="pt-8 border-t border-[#68bfcd]/8 flex items-center justify-between">
+            <a href="/" className="flex items-center gap-1.5 text-[#c8dde2]/30 hover:text-[#68bfcd] text-sm transition-colors duration-200" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               Back to Linkra
             </a>
-            <a href="#" className="flex items-center gap-1.5 text-white/35 hover:text-[#00C2FF] text-sm transition-colors">
+            <a href="#" className="flex items-center gap-1.5 text-[#c8dde2]/30 hover:text-[#68bfcd] text-sm transition-colors duration-200" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               Back to top
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M2 9l5-5 5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -884,12 +724,36 @@ export default function PrivacyParent() {
         </main>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-6 text-center">
-        <p className="text-white/20 text-xs">
-          © {new Date().getFullYear()} Linkra Inc. All rights reserved. ·{' '}
-          <a href="/" className="hover:text-[#00C2FF] transition-colors">linkra.io</a>
-        </p>
+      {/* Footer — matches landing page footer exactly */}
+      <footer className="relative z-10 border-t border-[#68bfcd]/8 py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className='flex items-center gap-2.5'>
+              <Image src="/images/logo.svg" alt="Linkra" width={24} height={24} />
+              <span className='text-[20px] font-bold text-white tracking-tight' style={{ fontFamily: "'Lora', Georgia, serif" }}>Linkra</span>
+            </div>
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
+              {[
+                { label: 'Features', href: '/#features' },
+                { label: 'Platforms', href: '/#platforms' },
+                { label: 'Pricing', href: '/#pricing' },
+                { label: 'Privacy Policy', href: '/privacy' },
+                { label: 'Terms of Service', href: '#' },
+                { label: 'Contact', href: 'mailto:hello@linkra.io' },
+              ].map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-[#c8dde2]/28 hover:text-[#68bfcd] transition-colors duration-200"
+                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+            <p className="text-[#c8dde2]/20 text-xs" style={{ fontFamily: "'DM Sans', sans-serif" }}>© {new Date().getFullYear()} Linkra. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
   )
