@@ -326,7 +326,7 @@ function Navbar() {
       }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Image src="/images/logo.svg" alt="Linkra" width={38} height={38} />
+          <Image src="/images/Logo.svg" alt="Linkra" width={38} height={38} />
           <span style={{
             fontFamily: "'Lora', Georgia, serif",
             fontSize: '1.5rem', fontWeight: 700, color: '#fff', letterSpacing: '-0.02em',
@@ -1342,7 +1342,7 @@ function Footer() {
         alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Image src="/images/logo.svg" alt="Linkra" width={26} height={26} />
+          <Image src="/images/Logo.svg" alt="Linkra" width={26} height={26} />
           <span style={{ fontFamily: "'Lora', Georgia, serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>Linkra</span>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>

@@ -21,7 +21,7 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <div className='flex items-center gap-2.5'>
-          <Image src="/images/logo.svg" alt="Linkra" width={40} height={40} />
+          <Image src="/images/Logo.svg" alt="Linkra" width={40} height={40} />
           <span className='text-[26px] font-bold tracking-tight text-white' style={{ fontFamily: "'Lora', Georgia, serif" }}>Linkra</span>
         </div>
         <a
@@ -729,7 +729,7 @@ export default function PrivacyParent() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className='flex items-center gap-2.5'>
-              <Image src="/images/logo.svg" alt="Linkra" width={24} height={24} />
+              <Image src="/images/Logo.svg" alt="Linkra" width={24} height={24} />
               <span className='text-[20px] font-bold text-white tracking-tight' style={{ fontFamily: "'Lora', Georgia, serif" }}>Linkra</span>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
