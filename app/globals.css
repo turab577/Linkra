@@ -9,6 +9,8 @@
 
 html {
   scroll-behavior: smooth;
+  overscroll-behavior-y: none; /* Stops the pull-to-refresh "bounce" */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -16,6 +18,18 @@ body {
   color: white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight */
+  -webkit-touch-callout: none; /* Disables long-press copy/paste menus on links/images */
+  user-select: none; /* Stops accidental text highlighting while scrolling */
+  padding-top: env(safe-area-inset-top); /* Supports notches and dynamic islands */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Allow users to select text and type inside inputs */
+input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 * {

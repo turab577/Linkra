@@ -1,210 +1,184 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import {
-  Settings, LogOut, Trash2, LayoutDashboard,
-  MessageCircle, Instagram, Phone, Send, AlertTriangle, Users, TrendingUp, Activity
+  MessageCircle, TrendingUp, Globe, MousePointerClick, Activity, Instagram, Phone, ArrowUpRight, Clock
 } from 'lucide-react'
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from 'recharts'
 
-export default function DashboardPage() {
-  const router = useRouter()
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [showLogoutModal, setShowLogoutModal] = useState(false)
-  const [deleteInput, setDeleteInput] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
+const engagementData = [
+  { name: 'Mon', clicks: 400, messages: 240 },
+  { name: 'Tue', clicks: 300, messages: 139 },
+  { name: 'Wed', clicks: 550, messages: 380 },
+  { name: 'Thu', clicks: 450, messages: 390 },
+  { name: 'Fri', clicks: 600, messages: 480 },
+  { name: 'Sat', clicks: 750, messages: 520 },
+  { name: 'Sun', clicks: 680, messages: 430 },
+]
 
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    router.push('/login')
-  }
+const sourceData = [
+  { name: 'Instagram', value: 400, color: '#E1306C' },
+  { name: 'WhatsApp', value: 350, color: '#25D366' },
+  { name: 'Telegram', value: 250, color: '#0088cc' },
+  { name: 'Web Direct', value: 200, color: '#00C2FF' },
+]
 
-  const handleDeleteProfile = async () => {
-    if (deleteInput !== 'delete account') return
-    setIsDeleting(true)
-    try {
-      const res = await fetch('/api/user/delete', { method: 'DELETE' })
-      if (res.ok) {
-        router.push('/register')
-      }
-    } catch (error) {
-      console.error(error)
-      setIsDeleting(false)
-    }
-  }
+const recentActivity = [
+  { id: 1, user: 'Sarah Jenkins', action: 'Sent a message via WhatsApp', time: '2 mins ago', icon: <Phone size={14} className="text-[#25D366]" /> },
+  { id: 2, user: 'Mike Ross', action: 'Clicked on Campaign Link A', time: '15 mins ago', icon: <MousePointerClick size={14} className="text-[#00C2FF]" /> },
+  { id: 3, user: 'Elena Gilbert', action: 'Sent a message via Instagram', time: '1 hour ago', icon: <Instagram size={14} className="text-[#E1306C]" /> },
+  { id: 4, user: 'System', action: 'Weekly Analytics Report Generated', time: '2 hours ago', icon: <Activity size={14} className="text-purple-400" /> },
+]
 
+export default function DashboardOverviewPage() {
   return (
-    <div className="min-h-screen bg-[#050D1A] text-white p-4 md:p-8 font-sans">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="p-4 md:p-8 space-y-8  pb-20">
 
-        {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0A1628]/60 p-6 rounded-3xl border border-white/10 backdrop-blur-md">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#00C2FF] to-blue-500 flex items-center justify-center shadow-[0_0_20px_rgba(0,194,255,0.3)]">
-              <LayoutDashboard size={28} className="text-white" />
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-1">Dashboard Overview</h1>
+          <p className="text-gray-400">Track your links, messages, and platform health in real-time.</p>
+        </div>
+        <div className="flex gap-2">
+          <span className="px-4 py-2 bg-green-500/10 text-green-400 border border-green-500/20 rounded-lg text-sm font-medium flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            All Systems Operational
+          </span>
+        </div>
+      </header>
+
+      {/* KPIs Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { title: 'Total Clicks', value: '45.2K', trend: '+12.5%', isUp: true, icon: <MousePointerClick className="text-[#00C2FF]" /> },
+          { title: 'Inbound Messages', value: '3,842', trend: '+8.2%', isUp: true, icon: <MessageCircle className="text-purple-400" /> },
+          { title: 'Conversion Rate', value: '8.4%', trend: '-1.2%', isUp: false, icon: <TrendingUp className="text-green-400" /> },
+          { title: 'Global Reach', value: '142', trend: '+5 new', isUp: true, icon: <Globe className="text-orange-400" />, suffix: 'Countries' },
+        ].map((stat, i) => (
+          <div key={i} className="bg-[#0A1628]/60 p-6 rounded-2xl border border-white/5 backdrop-blur-md relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+              {stat.icon}
             </div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2.5 bg-white/5 rounded-xl">{stat.icon}</div>
+              <h3 className="text-sm text-gray-400 font-medium">{stat.title}</h3>
+            </div>
+            <div className="flex items-end gap-2">
+              <p className="text-3xl font-bold text-white">{stat.value}</p>
+              {stat.suffix && <span className="text-sm text-gray-500 mb-1">{stat.suffix}</span>}
+            </div>
+            <div className={`mt-3 text-xs font-medium flex items-center gap-1 ${stat.isUp ? 'text-green-400' : 'text-red-400'}`}>
+              {stat.isUp ? <ArrowUpRight size={14} /> : <ArrowUpRight size={14} className="transform rotate-90" />}
+              {stat.trend} from last month
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* Main Chart */}
+        <div className="lg:col-span-2 bg-[#0A1628]/60 p-6 rounded-3xl border border-white/5 backdrop-blur-md">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold">Account Overview</h1>
-              <p className="text-sm text-gray-400">Welcome back! Here's what's happening with your channels today.</p>
+              <h2 className="text-lg font-bold text-white">Engagement Overview</h2>
+              <p className="text-xs text-gray-400">Clicks vs Messages (Last 7 Days)</p>
             </div>
+            <select className="bg-white/5 border border-white/10 text-xs rounded-lg px-3 py-1.5 text-gray-300 outline-none">
+              <option>Last 7 Days</option>
+              <option>Last 30 Days</option>
+              <option>This Year</option>
+            </select>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/inbox')}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-[#00C2FF] hover:bg-blue-500 text-[#050D1A] font-bold rounded-xl transition-all shadow-lg hover:shadow-[#00C2FF]/30"
-            >
-              <MessageCircle size={18} />
-              Open Inbox
-            </button>
-            <button
-              onClick={() => setShowLogoutModal(true)}
-              className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-gray-300"
-            >
-              <LogOut size={20} />
-            </button>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={engagementData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#00C2FF" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#00C2FF" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorMsgs" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={12} tickMargin={10} axisLine={false} tickLine={false} />
+                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                  itemStyle={{ color: '#fff', fontSize: '13px' }}
+                />
+                <Area type="monotone" dataKey="clicks" stroke="#00C2FF" strokeWidth={3} fillOpacity={1} fill="url(#colorClicks)" />
+                <Area type="monotone" dataKey="messages" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorMsgs)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-        </header>
-
-        {/* Analytics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { title: 'Total Messages', value: '1,248', icon: <MessageCircle size={20} className="text-[#00C2FF]" />, trend: '+12% this week' },
-            { title: 'Active Platforms', value: '3 / 4', icon: <Activity size={20} className="text-purple-400" />, trend: 'All systems operational' },
-            { title: 'New Leads', value: '84', icon: <Users size={20} className="text-green-400" />, trend: '+5% this week' },
-            { title: 'Avg. Response Rate', value: '94%', icon: <TrendingUp size={20} className="text-orange-400" />, trend: 'Top 10% in your industry' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-[#0A1628]/40 p-5 rounded-2xl border border-white/5 backdrop-blur-sm">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-white/5 rounded-lg">{stat.icon}</div>
-                <h3 className="text-sm text-gray-400 font-medium">{stat.title}</h3>
-              </div>
-              <p className="text-2xl font-bold mb-1">{stat.value}</p>
-              <p className="text-xs text-gray-500">{stat.trend}</p>
-            </div>
-          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Platforms */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <Settings size={20} className="text-[#00C2FF]" />
-              Connected Platforms
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { name: 'Instagram', icon: <Instagram size={24} className="text-pink-500" />, connected: true },
-                { name: 'WhatsApp', icon: <Phone size={24} className="text-green-500" />, connected: false },
-                { name: 'Telegram', icon: <Send size={24} className="text-blue-400" />, connected: true },
-                { name: 'Messenger', icon: <MessageCircle size={24} className="text-blue-600" />, connected: false },
-              ].map((platform) => (
-                <div key={platform.name} className="bg-[#0A1628]/40 p-5 rounded-2xl border border-white/5 flex items-center justify-between hover:bg-[#0A1628]/60 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white/5 rounded-xl">
-                      {platform.icon}
-                    </div>
-                    <span className="font-semibold">{platform.name}</span>
-                  </div>
-                  <button className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${platform.connected ? 'bg-green-500/10 text-green-400 hover:bg-green-500/20' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>
-                    {platform.connected ? 'Connected' : 'Connect'}
-                  </button>
-                </div>
-              ))}
-            </div>
+        {/* Traffic Sources Pie */}
+        <div className="bg-[#0A1628]/60 p-6 rounded-3xl border border-white/5 backdrop-blur-md flex flex-col">
+          <div className="mb-2">
+            <h2 className="text-lg font-bold text-white">Traffic Sources</h2>
+            <p className="text-xs text-gray-400">Where your audience comes from</p>
           </div>
-
-          {/* Danger Zone */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-red-400">
-              <AlertTriangle size={20} />
-              Danger Zone
-            </h2>
-            <div className="bg-red-500/5 p-6 rounded-3xl border border-red-500/20 space-y-4">
-              <h3 className="font-bold text-red-400">Delete Profile</h3>
-              <p className="text-sm text-gray-400">
-                Permanently remove your account and all associated data. This action cannot be undone.
-              </p>
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
-              >
-                <Trash2 size={18} />
-                Delete Account
-              </button>
-            </div>
+          <div className="flex-1 min-h-[250px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={sourceData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {sourceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                  itemStyle={{ color: '#fff', fontSize: '13px' }}
+                />
+                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', color: '#9ca3af' }} />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Global Logout Modal */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0A1628] w-full max-w-sm rounded-3xl border border-white/10 p-6 shadow-2xl">
-            <h3 className="text-xl font-bold mb-2">Sign Out</h3>
-            <p className="text-gray-400 text-sm mb-6">Are you sure you want to log out of your account?</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-sm font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex-1 py-2.5 rounded-xl bg-[#00C2FF] hover:bg-blue-500 text-[#050D1A] transition-colors text-sm font-bold"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
+      {/* Recent Activity Full Width */}
+      <div className="bg-[#0A1628]/60 p-6 rounded-3xl border border-white/5 backdrop-blur-md">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <Clock size={18} className="text-[#00C2FF]" />
+            Recent Activity
+          </h2>
+          <button className="text-xs text-[#00C2FF] hover:underline">View All</button>
         </div>
-      )}
-
-      {/* Sensitive Delete Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-[#0A1628] w-full max-w-md rounded-3xl border border-red-500/30 p-8 shadow-2xl">
-            <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
-              <AlertTriangle size={24} className="text-red-500" />
+        <div className="space-y-4">
+          {recentActivity.map((activity) => (
+            <div key={activity.id} className="flex items-start gap-4 p-4 hover:bg-white/5 rounded-xl transition-colors border border-white/5">
+              <div className="mt-1 p-2 bg-[#050D1A] rounded-full border border-white/5">
+                {activity.icon}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-white">{activity.user}</p>
+                <p className="text-sm text-gray-400">{activity.action}</p>
+              </div>
+              <span className="text-xs text-gray-500 font-medium">{activity.time}</span>
             </div>
-            <h3 className="text-2xl font-bold mb-2 text-red-400">Delete Account</h3>
-            <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-              This action is <span className="font-bold text-white">permanent and cannot be undone</span>.
-              All your messages, connected platforms, and settings will be wiped immediately.
-            </p>
-
-            <div className="mb-6">
-              <label className="block text-sm text-gray-400 mb-2">
-                Type <span className="font-bold text-white select-none">delete account</span> to confirm
-              </label>
-              <input
-                type="text"
-                value={deleteInput}
-                onChange={e => setDeleteInput(e.target.value)}
-                placeholder="delete account"
-                className="w-full bg-black/40 border border-red-500/30 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-red-500 transition-colors"
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => { setShowDeleteModal(false); setDeleteInput(''); }}
-                className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-sm font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                disabled={deleteInput !== 'delete account' || isDeleting}
-                onClick={handleDeleteProfile}
-                className="flex-1 py-3 rounded-xl bg-red-500 text-white transition-all text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-600"
-              >
-                {isDeleting ? 'Deleting...' : 'Permanently Delete'}
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
+
     </div>
   )
 }

@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import nodemailer from 'nodemailer'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json()
+    const { email, password, twoFactorCode } = await req.json()
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 })
@@ -21,10 +22,51 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password)
-
-    if (!passwordMatch) {
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
+    }
+    
+    if (user.twoFactorEnabled) {
+      if (!twoFactorCode) {
+        // Generate OTP and send to email
+        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000)
+
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { otp, otpExpiry }
+        })
+
+        console.log(`\n\n=== 2FA Login OTP for ${user.email} is: ${otp} ===\n\n`)
+
+        try {
+          if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+            let transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+            });
+            await transporter.sendMail({
+              from: '"Linkra Security" <' + process.env.EMAIL_USER + '>',
+              to: user.email,
+              subject: "Linkra - Login OTP",
+              text: `Your OTP for login is ${otp}. It will expire in 10 minutes.`
+            })
+          }
+        } catch (e) { console.log('Nodemailer error:', e) }
+
+        return NextResponse.json({ requiresTwoFactor: true, message: 'OTP sent to email' })
+      }
+      
+      if (user.otp !== twoFactorCode || !user.otpExpiry || user.otpExpiry < new Date()) {
+        return NextResponse.json({ message: 'Invalid or expired OTP' }, { status: 401 })
+      }
+
+      // Clear OTP after successful login
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { otp: null, otpExpiry: null }
+      })
     }
 
     const token = jwt.sign(

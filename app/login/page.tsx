@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false)
+  const [twoFactorCode, setTwoFactorCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -22,14 +24,18 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, twoFactorCode }),
       })
 
       if (res.ok) {
         router.push('/dashboard')
       } else {
         const data = await res.json()
-        setError(data.message || 'Login failed')
+        if (data.requiresTwoFactor) {
+          setRequiresTwoFactor(true)
+        } else {
+          setError(data.message || 'Login failed')
+        }
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
@@ -53,40 +59,57 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div>
-            <label className="block text-sm mb-2 text-[#c8dde2]/80">Email Address</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3.5 bg-[#0a1628]/60 border border-[#68bfcd]/20 rounded-xl text-white text-sm focus:outline-none focus:border-[#68bfcd] transition-colors"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm mb-2 text-[#c8dde2]/80">Password</label>
-            <div className="relative">
+          {requiresTwoFactor ? (
+            <div>
+              <label className="block text-sm mb-2 text-[#c8dde2]/80">Email OTP (Sent to your email)</label>
               <input
-                type={showPassword ? "text" : "password"}
+                type="text"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full py-3.5 pl-4 pr-12 bg-[#0a1628]/60 border border-[#68bfcd]/20 rounded-xl text-white text-sm focus:outline-none focus:border-[#68bfcd] transition-colors"
-                placeholder="••••••••"
+                maxLength={6}
+                value={twoFactorCode}
+                onChange={(e) => setTwoFactorCode(e.target.value)}
+                className="w-full p-3.5 bg-[#0a1628]/60 border border-[#68bfcd]/20 rounded-xl text-white text-center tracking-widest text-xl font-mono focus:outline-none focus:border-[#68bfcd] transition-colors"
+                placeholder="000000"
               />
-              <button 
-                type="button" 
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8dde2]/60 hover:text-white transition-colors"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
             </div>
-            <div className="flex justify-end mt-2">
-              <Link href="/forgot-password" className="text-xs text-[#68bfcd] font-semibold hover:underline">Forgot password?</Link>
-            </div>
-          </div>
+          ) : (
+            <>
+              <div>
+                <label className="block text-sm mb-2 text-[#c8dde2]/80">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-3.5 bg-[#0a1628]/60 border border-[#68bfcd]/20 rounded-xl text-white text-sm focus:outline-none focus:border-[#68bfcd] transition-colors"
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-2 text-[#c8dde2]/80">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full py-3.5 pl-4 pr-12 bg-[#0a1628]/60 border border-[#68bfcd]/20 rounded-xl text-white text-sm focus:outline-none focus:border-[#68bfcd] transition-colors"
+                    placeholder="••••••••"
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c8dde2]/60 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                <div className="flex justify-end mt-2">
+                  <Link href="/forgot-password" className="text-xs text-[#68bfcd] font-semibold hover:underline">Forgot password?</Link>
+                </div>
+              </div>
+            </>
+          )}
           
           <button
             type="submit"
