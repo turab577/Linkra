@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Instagram",
+    "description": "Connect Instagram Direct to reply from Linkra.",
+    "status": "Connected",
+    "account": "@linkra_official"
+  },
+  {
+    "name": "WhatsApp",
+    "description": "Integrate WhatsApp Business API for automated responses.",
+    "status": "Connected",
+    "account": "+1 (555) 123-4567"
+  },
+  {
+    "name": "Telegram",
+    "description": "Link your Telegram bots to manage community chats.",
+    "status": "Connected",
+    "account": "linkra_bot"
+  },
+  {
+    "name": "Messenger",
+    "description": "Sync Facebook Messenger for cross-platform messaging.",
+    "status": "Disconnected",
+    "account": null
+  }
+]

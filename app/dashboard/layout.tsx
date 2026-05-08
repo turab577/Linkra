@@ -24,6 +24,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       })
   }, [])
 
+  useEffect(() => {
+    const handleProfileUpdate = (e: Event) => {
+      try {
+        const custom = e as CustomEvent
+        const updated = custom.detail
+        if (updated?.id) setProfile(updated)
+      } catch (err) {
+        // ignore
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('profile:update', handleProfileUpdate as EventListener)
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('profile:update', handleProfileUpdate as EventListener)
+      }
+    }
+  }, [])
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/login')
@@ -78,7 +98,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {profile && (
-        <div className="p-4 border-t border-white/5 m-4 bg-white/5 rounded-2xl flex items-center gap-3">
+        <Link
+          href="/dashboard/profile"
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="p-4 border-t border-white/5 m-4 bg-white/5 rounded-2xl flex items-center gap-3 cursor-pointer hover:bg-white/6 transition-colors"
+        >
           {profile.image ? (
             <img src={profile.image} alt="Profile" className="w-10 h-10 rounded-full object-cover" />
           ) : (
@@ -90,7 +114,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <p className="text-sm font-semibold text-white truncate">{profile.name || 'User'}</p>
             <p className="text-xs text-gray-400 truncate">{profile.email}</p>
           </div>
-        </div>
+        </Link>
       )}
     </>
   )

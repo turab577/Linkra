@@ -55,9 +55,16 @@ export async function POST(req: Request) {
           }
         } catch (e) { console.log('Nodemailer error:', e) }
 
-        return NextResponse.json({ requiresTwoFactor: true, message: 'OTP sent to email' })
+        // Create a short-lived temporary token for 2FA verification (not the auth token)
+        const tempToken = jwt.sign(
+          { is2fa: true, userId: user.id, email: user.email },
+          JWT_SECRET,
+          { expiresIn: '10m' }
+        )
+
+        return NextResponse.json({ requiresTwoFactor: true, token: tempToken, message: 'OTP sent to email' })
       }
-      
+
       if (user.otp !== twoFactorCode || !user.otpExpiry || user.otpExpiry < new Date()) {
         return NextResponse.json({ message: 'Invalid or expired OTP' }, { status: 401 })
       }
