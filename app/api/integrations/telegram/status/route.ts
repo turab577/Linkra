@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import path from 'path'
 import fs from 'fs/promises'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 
 async function readJson(file: string) {
@@ -13,13 +13,22 @@ async function readJson(file: string) {
   }
 }
 
-async function getUser() {
+type UserToken = { userId: string }
+
+async function getUser(): Promise<UserToken | null> {
   const token = cookies().get('auth_token')?.value
   if (!token) return null
   try {
     const secret = process.env.JWT_SECRET || 'super-secret-jwt-key'
-    const payload = jwt.verify(token, secret)
-    return payload as any
+    const payload = jwt.verify(token, secret) as JwtPayload | string
+    if (typeof payload === 'string') return null
+    const userId = (payload as any).userId && typeof (payload as any).userId === 'string'
+      ? (payload as any).userId
+      : payload.sub && typeof payload.sub === 'string'
+      ? payload.sub
+      : null
+    if (!userId) return null
+    return { userId }
   } catch (e) {
     console.error('JWT Error:', e)
     return null

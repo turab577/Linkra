@@ -1,15 +1,24 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
-async function getUser() {
+type UserToken = { userId: string }
+
+async function getUser(): Promise<UserToken | null> {
   const token = cookies().get('auth_token')?.value
   if (!token) return null
   try {
     const secret = process.env.JWT_SECRET || 'super-secret-jwt-key'
-    const payload = jwt.verify(token, secret)
-    return payload
+    const payload = jwt.verify(token, secret) as JwtPayload | string
+    if (typeof payload === 'string') return null
+    const userId = (payload as any).userId && typeof (payload as any).userId === 'string'
+      ? (payload as any).userId
+      : payload.sub && typeof payload.sub === 'string'
+      ? payload.sub
+      : null
+    if (!userId) return null
+    return { userId }
   } catch (e) {
     console.error('JWT Error:', e)
     return null
@@ -20,7 +29,7 @@ export async function GET() {
   const payload = await getUser()
   if (!payload) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-  const user = await prisma.user.findUnique({ where: { id: payload.userId as string } })
+  const user = await prisma.user.findUnique({ where: { id: payload.userId } })
   if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 })
 
   return NextResponse.json({
@@ -40,7 +49,7 @@ export async function PUT(req: Request) {
     const { name, image } = await req.json()
     
     const user = await prisma.user.update({
-      where: { id: payload.userId as string },
+      where: { id: payload.userId },
       data: { name, image }
     })
 
