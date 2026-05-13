@@ -94,41 +94,23 @@ export default function DataDeletion() {
             <h2 className="text-white text-xl font-bold leading-snug pt-1">How to Request Data Deletion</h2>
           </div>
           <div className="ml-12 text-white/55 text-sm leading-[1.9] space-y-4">
-            <p>You can delete your data in two ways:</p>
+            <p>You can permanently delete your account directly from your dashboard settings.</p>
 
-            {/* Option A */}
-          
-            {/* Option B */}
-            <div className="p-4 rounded-xl border border-white/8 bg-white/2">
-              <p className="text-white/80 font-bold text-sm mb-2">Email Request</p>
-              <p className="text-white/50 text-xs leading-relaxed mb-3">
-                Send an email to the address below with the subject line <span className="text-[#00C2FF] font-semibold">"Data Deletion Request"</span>.
-                Please include:
-              </p>
-              <div className="space-y-1.5">
+            <div className="p-4 rounded-xl border border-white/8 bg-white/2 mb-4">
+              <p className="text-white/80 font-bold text-sm mb-2">From Account Settings</p>
+              <div className="space-y-2">
                 {[
-                  'Your full name',
-                  'The email address on your Linkra account',
-                  'Your Facebook / Instagram User ID (if you connected Meta platforms)',
-                  'Which data you want deleted (specific platform or full account)',
+                  'Log in to your account',
+                  'Go to Settings',
+                  'Click "Delete Account" in the Danger Zone section',
+                  'Type "delete account" in the confirmation box',
+                  'Click "Permanently Delete"',
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-2">
-                    <svg className="mt-0.5 shrink-0" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                      <circle cx="6" cy="6" r="5" fill="#00C2FF" opacity="0.15"/>
-                      <path d="M3.5 6l2 2 3-3" stroke="#00C2FF" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="text-white/45 text-xs">{item}</span>
+                    <span className="shrink-0 w-5 h-5 rounded-full bg-[#00C2FF]/10 text-[#00C2FF] flex items-center justify-center text-[10px] font-bold">{i + 1}</span>
+                    <span className="text-white/60 text-xs pt-0.5">{item}</span>
                   </div>
                 ))}
-              </div>
-              <div className="mt-4 p-3 rounded-lg bg-[#00C2FF]/8 border border-[#00C2FF]/15 flex items-center gap-3">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <rect x="1" y="3" width="12" height="9" rx="1.5" stroke="#00C2FF" strokeWidth="1.2"/>
-                  <path d="M1 4.5l6 4 6-4" stroke="#00C2FF" strokeWidth="1.2" strokeLinecap="round"/>
-                </svg>
-                <a href="mailto:privacy@linkra.io" className="text-[#00C2FF] text-sm font-bold hover:underline">
-                  privacy@linkra.io
-                </a>
               </div>
             </div>
           </div>
@@ -180,15 +162,14 @@ export default function DataDeletion() {
             <h2 className="text-white text-xl font-bold leading-snug pt-1">Timeline</h2>
           </div>
           <div className="ml-12 space-y-3 text-white/55 text-sm leading-[1.9]">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { time: 'Within 3 days', desc: 'We confirm your request via email' },
-                { time: 'Within 30 days', desc: 'All personal data permanently deleted' },
-                { time: '72 hours', desc: 'Platform OAuth tokens revoked immediately after disconnection' },
+                { time: 'Instantly', desc: 'All personal data permanently deleted' },
+                { time: 'Instantly', desc: 'Platform OAuth tokens revoked immediately' },
               ].map((t) => (
-                <div key={t.time} className="p-4 rounded-xl border border-white/6 bg-white/2 text-center">
-                  <p className="text-[#00C2FF] font-black text-base mb-1">{t.time}</p>
-                  <p className="text-white/40 text-xs leading-relaxed">{t.desc}</p>
+                <div key={t.time + t.desc} className="p-4 rounded-xl border border-emerald-500/10 bg-emerald-500/5 text-center">
+                  <p className="text-[#10B981] font-black text-base mb-1">{t.time}</p>
+                  <p className="text-white/60 text-xs leading-relaxed">{t.desc}</p>
                 </div>
               ))}
             </div>

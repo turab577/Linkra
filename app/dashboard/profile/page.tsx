@@ -28,7 +28,7 @@ export default function ProfilePage() {
 
   const isChanged = useMemo(() =>
     name.trim() !== initial.name.trim() || image.trim() !== initial.image.trim()
-  , [name, image, initial])
+    , [name, image, initial])
 
   const readFile = (file: File) => {
     if (file.size > 5 * 1024 * 1024) { setError('File too large. Max 5MB.'); return }
@@ -54,8 +54,8 @@ export default function ProfilePage() {
         if (updated?.id) {
           setProfile(updated); setName(updated.name || ''); setImage(updated.image || '')
           setInitial({ name: updated.name || '', image: updated.image || '' })
-          try { router.refresh() } catch {}
-          try { window.dispatchEvent(new CustomEvent('profile:update', { detail: updated })) } catch {}
+          try { router.refresh() } catch { }
+          try { window.dispatchEvent(new CustomEvent('profile:update', { detail: updated })) } catch { }
         }
         setTimeout(() => setSuccess(''), 3000)
       }
