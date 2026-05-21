@@ -108,7 +108,7 @@ export async function GET(req: Request) {
       const origin = new URL(req.url).origin
       return NextResponse.redirect(`${origin}/login?error=facebook_callback_failure`)
     } catch (e) {
-      return NextResponse.redirect('http://localhost:3000/login?error=facebook_callback_failure')
-    }
+const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://linkra.it.com'
+return NextResponse.redirect(`${fallbackOrigin}/login?error=facebook_callback_failure`)    }
   }
 }
