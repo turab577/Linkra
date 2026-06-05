@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { getPublicOrigin, getFacebookRedirectUri } from '@/lib/oauth'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
@@ -43,7 +44,7 @@ async function getUserInfo(accessToken: string) {
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
-    const origin = url.origin
+    const origin = getPublicOrigin(req)
     const code = url.searchParams.get('code')
     const error = url.searchParams.get('error')
 
@@ -55,7 +56,7 @@ export async function GET(req: Request) {
       return NextResponse.redirect(`${origin}/login?error=missing_code`)
     }
 
-    const redirectUri = process.env.FACEBOOK_REDIRECT_URI || `${origin}/api/auth/facebook/callback`
+    const redirectUri = getFacebookRedirectUri(req)
 
     const tokenResponse: any = await exchangeCodeForTokens(code, redirectUri)
     const accessToken = tokenResponse.access_token
@@ -105,10 +106,11 @@ export async function GET(req: Request) {
   } catch (err: any) {
     console.error('Facebook callback error:', err)
     try {
-      const origin = new URL(req.url).origin
+      const origin = getPublicOrigin(req)
       return NextResponse.redirect(`${origin}/login?error=facebook_callback_failure`)
     } catch (e) {
-const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://linkra.it.com'
-return NextResponse.redirect(`${fallbackOrigin}/login?error=facebook_callback_failure`)    }
+      const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkra.it.com'
+      return NextResponse.redirect(`${fallbackOrigin}/login?error=facebook_callback_failure`)
+    }
   }
 }

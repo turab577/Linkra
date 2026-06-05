@@ -3,15 +3,24 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import nodemailer from 'nodemailer'
+import { verifyRecaptcha } from '@/lib/recaptcha'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
 export async function POST(req: Request) {
   try {
-    const { email, password, twoFactorCode } = await req.json()
+    const { email, password, twoFactorCode, recaptchaToken } = await req.json()
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 })
+    }
+
+    // Skip captcha on the 2FA step (already passed on the first login call)
+    if (!twoFactorCode) {
+      const captcha = await verifyRecaptcha(recaptchaToken, 'login')
+      if (!captcha.ok) {
+        return NextResponse.json({ message: 'reCAPTCHA verification failed' }, { status: 400 })
+      }
     }
 
     const user = await prisma.user.findUnique({

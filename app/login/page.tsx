@@ -4,11 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
+import { Recaptcha } from '@/lib/RecaptchaWidget'
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const [recaptchaKey, setRecaptchaKey] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -17,6 +20,12 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      setError('Please complete the reCAPTCHA')
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -24,7 +33,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, recaptchaToken }),
       })
 
       const data = await res.json()
@@ -38,9 +47,14 @@ export default function LoginPage() {
         router.push('/dashboard')
       } else {
         setError(data.message || 'Login failed')
+        // token is single-use; force a fresh challenge for the next attempt
+        setRecaptchaToken(null)
+        setRecaptchaKey((k) => k + 1)
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
+      setRecaptchaToken(null)
+      setRecaptchaKey((k) => k + 1)
     } finally {
       setLoading(false)
     }
@@ -99,6 +113,8 @@ export default function LoginPage() {
               </div>
             </>
           </>
+
+          <Recaptcha key={recaptchaKey} onChange={setRecaptchaToken} />
 
           <button
             type="submit"

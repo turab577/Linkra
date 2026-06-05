@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
+import { Recaptcha } from '@/lib/RecaptchaWidget'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -17,23 +18,30 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [loadingFacebook, setLoadingFacebook] = useState(false)
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const [recaptchaKey, setRecaptchaKey] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError('')
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
-      setLoading(false)
       return
     }
+
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      setError('Please complete the reCAPTCHA')
+      return
+    }
+
+    setLoading(true)
+    setError('')
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, recaptchaToken }),
       })
 
       if (res.ok) {
@@ -41,9 +49,14 @@ export default function RegisterPage() {
       } else {
         const data = await res.json()
         setError(data.message || 'Registration failed')
+        // token is single-use; force a fresh challenge for the next attempt
+        setRecaptchaToken(null)
+        setRecaptchaKey((k) => k + 1)
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
+      setRecaptchaToken(null)
+      setRecaptchaKey((k) => k + 1)
     } finally {
       setLoading(false)
     }
@@ -126,6 +139,8 @@ export default function RegisterPage() {
               </button>
             </div>
           </div>
+
+          <Recaptcha key={recaptchaKey} onChange={setRecaptchaToken} />
 
           <button
             type="submit"

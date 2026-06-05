@@ -1,13 +1,19 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { verifyRecaptcha } from '@/lib/recaptcha'
 
 export async function POST(req: Request) {
   try {
-    const { email, password, name } = await req.json()
+    const { email, password, name, recaptchaToken } = await req.json()
 
     if (!email || !password) {
       return NextResponse.json({ message: 'Email and password are required' }, { status: 400 })
+    }
+
+    const captcha = await verifyRecaptcha(recaptchaToken, 'register')
+    if (!captcha.ok) {
+      return NextResponse.json({ message: 'reCAPTCHA verification failed' }, { status: 400 })
     }
 
     const existingUser = await prisma.user.findUnique({
