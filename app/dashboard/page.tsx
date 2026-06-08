@@ -52,10 +52,10 @@ export default function DashboardOverviewPage() {
       {/* KPIs Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: 'Total Clicks', value: '45.2K', trend: '+12.5%', isUp: true, icon: <MousePointerClick className="text-[#00C2FF]" /> },
-          { title: 'Inbound Messages', value: '3,842', trend: '+8.2%', isUp: true, icon: <MessageCircle className="text-purple-400" /> },
-          { title: 'Conversion Rate', value: '8.4%', trend: '-1.2%', isUp: false, icon: <TrendingUp className="text-green-400" /> },
-          { title: 'Global Reach', value: '142', trend: '+5 new', isUp: true, icon: <Globe className="text-orange-400" />, suffix: 'Countries' },
+          { title: 'Total Clicks', value: '45.2K', trend: '+12.5%', isUp: true, icon: <MousePointerClick className="text-white" /> },
+          { title: 'Inbound Messages', value: '3,842', trend: '+8.2%', isUp: true, icon: <MessageCircle className="text-white" /> },
+          { title: 'Conversion Rate', value: '8.4%', trend: '-1.2%', isUp: false, icon: <TrendingUp className="text-white" /> },
+          { title: 'Global Reach', value: '142', trend: '+5 new', isUp: true, icon: <Globe className="text-white" />, suffix: 'Countries' },
         ].map((stat, i) => (
           <div key={i} className="bg-[#0A1628]/60 p-6 rounded-2xl border border-white/5 backdrop-blur-md relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">

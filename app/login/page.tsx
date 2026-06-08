@@ -102,7 +102,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-black transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -136,7 +136,7 @@ export default function LoginPage() {
             type="button"
             onClick={() => {
               setLoadingGoogle(true)
-              router.push('/api/auth/google/redirect')
+              window.location.href = '/api/auth/google/redirect'
             }}
             disabled={loadingGoogle}
             className={`w-full p-3.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-3 hover:bg-white/10 transition-colors ${loadingGoogle ? 'opacity-70 cursor-not-allowed' : ''}`}
@@ -148,7 +148,7 @@ export default function LoginPage() {
             type="button"
             onClick={() => {
               setLoadingFacebook(true)
-              router.push('/api/auth/facebook/redirect')
+              window.location.href = '/api/auth/facebook/redirect'
             }}
             disabled={loadingFacebook}
             className={`w-full p-3.5 bg-[#1877F2] rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-3 hover:bg-[#1877F2]/90 transition-colors ${loadingFacebook ? 'opacity-70 cursor-not-allowed' : ''}`}
