@@ -105,7 +105,8 @@ export async function GET(req: Request) {
     console.error('Google callback error:', err)
     try {
       const origin = getPublicOrigin(req)
-      return NextResponse.redirect(`${origin}/login?error=google_callback_failure`)
+      const detail = encodeURIComponent(String(err?.message || err).slice(0, 300))
+      return NextResponse.redirect(`${origin}/login?error=google_callback_failure&detail=${detail}`)
     } catch (e) {
       const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkra.it.com'
       return NextResponse.redirect(`${fallbackOrigin}/login?error=google_callback_failure`)
