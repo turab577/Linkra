@@ -4,6 +4,9 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { getPublicOrigin, getFacebookRedirectUri } from '@/lib/oauth'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
 async function exchangeCodeForTokens(code: string, redirectUri: string) {

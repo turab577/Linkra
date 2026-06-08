@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getGoogleRedirectUri } from '@/lib/oauth'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 export async function GET(req: Request) {
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 

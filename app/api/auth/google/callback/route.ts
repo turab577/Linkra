@@ -4,6 +4,12 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { getPublicOrigin, getGoogleRedirectUri } from '@/lib/oauth'
 
+// OAuth callback must never be cached. Vercel was caching the 307 redirect by
+// path (ignoring ?code=), so every login replayed the first response and the
+// handler never re-ran. force-dynamic + no-store kills that.
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
 async function exchangeCodeForTokens(code: string, redirectUri: string) {
@@ -41,6 +47,12 @@ async function getUserInfo(accessToken: string) {
   return res.json()
 }
 
+function noStoreRedirect(url: string) {
+  const res = NextResponse.redirect(url)
+  res.headers.set('Cache-Control', 'no-store, max-age=0')
+  return res
+}
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
@@ -49,11 +61,11 @@ export async function GET(req: Request) {
     const error = url.searchParams.get('error')
 
     if (error) {
-      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error)}`)
+      return noStoreRedirect(`${origin}/login?error=${encodeURIComponent(error)}`)
     }
 
     if (!code) {
-      return NextResponse.redirect(`${origin}/login?error=missing_code`)
+      return noStoreRedirect(`${origin}/login?error=missing_code`)
     }
 
     const redirectUri = getGoogleRedirectUri(req)
@@ -65,7 +77,7 @@ export async function GET(req: Request) {
     const profile: any = await getUserInfo(accessToken)
 
     if (!profile || !profile.email || !profile.email_verified) {
-      return NextResponse.redirect(`${origin}/login?error=google_email_not_verified`)
+      return noStoreRedirect(`${origin}/login?error=google_email_not_verified`)
     }
 
     // Find or create user
@@ -92,6 +104,7 @@ export async function GET(req: Request) {
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' })
 
     const response = NextResponse.redirect(`${origin}/dashboard`)
+    response.headers.set('Cache-Control', 'no-store, max-age=0')
     response.cookies.set('auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -106,10 +119,10 @@ export async function GET(req: Request) {
     try {
       const origin = getPublicOrigin(req)
       const detail = encodeURIComponent(String(err?.message || err).slice(0, 300))
-      return NextResponse.redirect(`${origin}/login?error=google_callback_failure&detail=${detail}`)
+      return noStoreRedirect(`${origin}/login?error=google_callback_failure&detail=${detail}`)
     } catch (e) {
       const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkra.it.com'
-      return NextResponse.redirect(`${fallbackOrigin}/login?error=google_callback_failure`)
+      return noStoreRedirect(`${fallbackOrigin}/login?error=google_callback_failure`)
     }
   }
 }
