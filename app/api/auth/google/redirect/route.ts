@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
+import { getGoogleRedirectUri } from '@/lib/oauth'
 
 export async function GET(req: Request) {
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-  const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/google/callback'
 
   if (!GOOGLE_CLIENT_ID) {
     return NextResponse.json({ message: 'Google client id not configured' }, { status: 500 })
   }
+
+  const REDIRECT_URI = getGoogleRedirectUri(req)
 
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,

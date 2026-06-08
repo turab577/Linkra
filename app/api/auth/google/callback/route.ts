@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { getPublicOrigin, getGoogleRedirectUri } from '@/lib/oauth'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key'
 
@@ -43,7 +44,7 @@ async function getUserInfo(accessToken: string) {
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
-    const origin = url.origin
+    const origin = getPublicOrigin(req)
     const code = url.searchParams.get('code')
     const error = url.searchParams.get('error')
 
@@ -55,7 +56,7 @@ export async function GET(req: Request) {
       return NextResponse.redirect(`${origin}/login?error=missing_code`)
     }
 
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${origin}/api/auth/google/callback`
+    const redirectUri = getGoogleRedirectUri(req)
 
     const tokenResponse: any = await exchangeCodeForTokens(code, redirectUri)
     const accessToken = tokenResponse.access_token
@@ -103,10 +104,11 @@ export async function GET(req: Request) {
   } catch (err: any) {
     console.error('Google callback error:', err)
     try {
-      const origin = new URL(req.url).origin
+      const origin = getPublicOrigin(req)
       return NextResponse.redirect(`${origin}/login?error=google_callback_failure`)
     } catch (e) {
-      return NextResponse.redirect('http://localhost:3000/login?error=google_callback_failure')
+      const fallbackOrigin = process.env.NEXT_PUBLIC_APP_URL || 'https://www.linkra.it.com'
+      return NextResponse.redirect(`${fallbackOrigin}/login?error=google_callback_failure`)
     }
   }
 }

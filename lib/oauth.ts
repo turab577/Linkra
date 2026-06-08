@@ -5,24 +5,18 @@
 // Both the redirect route and the callback route MUST derive it the same way,
 // which is why this lives in one place.
 //
-// Resolution order:
-//   1. Explicit env (FACEBOOK_REDIRECT_URI / GOOGLE_REDIRECT_URI) — exact control.
-//   2. NEXT_PUBLIC_APP_URL — canonical app origin.
-//   3. The actual request origin, honoring Vercel proxy headers so we get the
-//      real https:// + public host the browser used (req.url can be http:// and
-//      an internal host behind the serverless proxy).
+// Resolution is ALWAYS driven by the actual request origin so the flow adapts to
+// whatever domain the browser used: a request from localhost redirects back to
+// localhost, a request from the deployed host redirects back to that host. We
+// honor Vercel proxy headers because req.url can be http:// + an internal host
+// behind the serverless proxy.
 //
-// (3) makes OAuth auto-adapt to whatever domain the user is on (www or apex),
-// so a www/non-www env mismatch can no longer break the flow.
-
-function trimTrailingSlash(value: string) {
-  return value.replace(/\/+$/, '')
-}
+// Note: we deliberately do NOT read GOOGLE_REDIRECT_URI / FACEBOOK_REDIRECT_URI /
+// NEXT_PUBLIC_APP_URL here — a fixed env value would pin every environment to one
+// origin and break the localhost-vs-deployed behavior above. Each origin's
+// callback URL must still be registered in the provider console.
 
 export function getPublicOrigin(req: Request): string {
-  const fromEnv = process.env.NEXT_PUBLIC_APP_URL
-  if (fromEnv) return trimTrailingSlash(fromEnv)
-
   const headers = req.headers
   const proto = headers.get('x-forwarded-proto')?.split(',')[0].trim() || 'https'
   const host = headers.get('x-forwarded-host') || headers.get('host')
@@ -33,11 +27,9 @@ export function getPublicOrigin(req: Request): string {
 }
 
 export function getFacebookRedirectUri(req: Request): string {
-  if (process.env.FACEBOOK_REDIRECT_URI) return process.env.FACEBOOK_REDIRECT_URI
   return `${getPublicOrigin(req)}/api/auth/facebook/callback`
 }
 
 export function getGoogleRedirectUri(req: Request): string {
-  if (process.env.GOOGLE_REDIRECT_URI) return process.env.GOOGLE_REDIRECT_URI
   return `${getPublicOrigin(req)}/api/auth/google/callback`
 }
